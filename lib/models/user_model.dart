@@ -7,8 +7,8 @@ class UserModel {
   final String emailAddress;
   final String location;
   final String shippingAddress;
-  final num mobileNumber;
-  final DateTime dateOfBirth;
+  final String mobileNumber;
+  final String dateOfBirth;
   final bool privacyPolicy;
 
   UserModel({

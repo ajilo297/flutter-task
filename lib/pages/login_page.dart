@@ -58,7 +58,9 @@ class LoginPageState extends State<LoginPage> {
           ),
           _spacer,
           _spacer,
-          _buttonRow(),
+          _loginButton(),
+          _spacer,
+          _registerButton(),
         ],
       ),
     );
@@ -72,6 +74,32 @@ class LoginPageState extends State<LoginPage> {
         _spacer,
         RaisedButton(child: Text("Login"), onPressed: _login),
       ],
+    );
+  }
+
+  Widget _loginButton() {
+    return RaisedButton(
+      color: Color.fromARGB(255, 150, 0, 0),
+       shape: StadiumBorder(),
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+          child: Text(
+            "LOGIN",
+            textAlign: TextAlign.center,
+            style:TextStyle(color: Colors.white),
+          ),
+          width: double.infinity,
+        ),
+        onPressed: _login);
+  }
+
+  Widget _registerButton() {
+    return FlatButton(
+      onPressed: _register,
+      child: Text(
+        "New User? Register",
+        style: TextStyle(fontSize: 14.0),
+      ),
     );
   }
 
@@ -100,11 +128,15 @@ class LoginPageState extends State<LoginPage> {
     });
   }
 
+  void _register() {
+    NavigatorManager.navigateToRegisterPage(context: context);
+  }
+
   void _login() {
     String username = userNameController.text;
     String password = passwordController.text;
 
-    if (!_isUsernameValid(userName: username)) {
+    if (!isUsernameValid(userName: username)) {
       Utils.showSnackBar(
         scaffoldKey: _scaffoldStateKey,
         message: "Enter a valid username",
@@ -112,7 +144,7 @@ class LoginPageState extends State<LoginPage> {
       return;
     }
 
-    if (!_isPasswordValid(password: password)) {
+    if (!isPasswordValid(password: password)) {
       Utils.showSnackBar(
         scaffoldKey: _scaffoldStateKey,
         message: "Enter a valid password",
@@ -120,16 +152,36 @@ class LoginPageState extends State<LoginPage> {
       return;
     }
 
-    DatabaseManager.login(username: username, password: password);
+    DatabaseManager.login(
+      username: username,
+      password: password,
+    ).then((b) {
+      if (b)
+        _navigateToHomePage();
+      else {
+        Utils.showSnackBar(
+          scaffoldKey: _scaffoldStateKey,
+          message: "Invalid Credentials",
+        );
+      }
+    });
   }
 
-  bool _isUsernameValid({@required String userName}) {
+  void _navigateToHomePage() {
+    NavigatorManager.navigateToHomePage(context: context);
+  }
+
+  @visibleForTesting
+  bool isUsernameValid({@required String userName}) {
     assert(userName != null);
     if (userName.isEmpty) return false;
+    if (userName.length < 6) return false;
+    if (userName.contains(new RegExp(r'[@!#$%^&*()]'))) return false;
     return true;
   }
 
-  bool _isPasswordValid({@required String password}) {
+  @visibleForTesting
+  bool isPasswordValid({@required String password}) {
     assert(password != null);
     if (password.isEmpty) return false;
     if (password.length < 6) return false;

@@ -14,8 +14,9 @@ class MainApplicationState extends State<MainApplication> {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primaryColor: Colors.red,
-        brightness: Brightness.dark,
+        primaryColor: Color.fromARGB(255, 150, 0, 0),
+        accentColor: Color.fromARGB(255, 155, 0, 155),
+        brightness: Brightness.light,
       ),
       routes: {
         "/": (_) => LoginPage(),

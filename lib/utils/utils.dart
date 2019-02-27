@@ -1,5 +1,6 @@
 export 'api_manager.dart';
 export 'database_manager.dart';
+export 'navigator_manager.dart';
 
 import "package:flutter/material.dart";
 
